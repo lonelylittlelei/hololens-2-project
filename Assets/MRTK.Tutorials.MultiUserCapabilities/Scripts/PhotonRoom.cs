@@ -22,6 +22,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
         [SerializeField] private GameObject brainPrefab = default;
         [SerializeField] private GameObject videoPrefab = default;
         [SerializeField] private Transform roverExplorerLocation = default;
+        public static string myStaticObjString;
 
 
         private Vector3 anchorPosition;
@@ -115,7 +116,33 @@ namespace MRTK.Tutorials.MultiUserCapabilities
         }
 
 
+        private void synchronizeObj() {
 
+            if (gameObjectList == null)
+            {
+                gameObjectList.Add(readyPrefab);
+                gameObjectList.Add(skullPrefab);
+                gameObjectList.Add(brainPrefab);
+                gameObjectList.Add(videoPrefab);
+            }
+
+
+            // Iterate through the list of GameObjects
+            foreach (GameObject gameObject in gameObjectList)
+            {
+
+                string curCloneObjString = gameObject.name + "(Clone)";
+                GameObject temp = GameObject.Find(curCloneObjString);
+                // Perform some operation on each GameObject
+                // For instance, we can just print the GameObject's name:
+                if (curCloneObjString != myStaticObjString)
+                    temp.SetActive(false);
+                else
+                    temp.SetActive(true);
+
+            }
+
+        }
 
         private void Start()
         {
@@ -164,6 +191,8 @@ namespace MRTK.Tutorials.MultiUserCapabilities
         {
             MyCreation(readyPrefab);
         }
+
+
         private void CreatPlayer()
         {
             var player = PhotonNetwork.Instantiate(photonUserPrefab.name, new Vector3(0f, 0.2f, 0f), Quaternion.identity);
@@ -259,7 +288,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
         public void MyCreation(GameObject newTempObj)
         {
 
-
+            myStaticObjString = newTempObj.name + "(Clone)";
 
             removeAllObj();
 
