@@ -22,7 +22,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
         [SerializeField] private GameObject brainPrefab = default;
         [SerializeField] private GameObject videoPrefab = default;
         [SerializeField] private Transform roverExplorerLocation = default;
-        public static string myStaticObjString;
+  
 
 
         private Vector3 anchorPosition;
@@ -116,33 +116,6 @@ namespace MRTK.Tutorials.MultiUserCapabilities
         }
 
 
-        private void synchronizeObj() {
-
-            if (gameObjectList == null)
-            {
-                gameObjectList.Add(readyPrefab);
-                gameObjectList.Add(skullPrefab);
-                gameObjectList.Add(brainPrefab);
-                gameObjectList.Add(videoPrefab);
-            }
-
-
-            // Iterate through the list of GameObjects
-            foreach (GameObject gameObject in gameObjectList)
-            {
-
-                string curCloneObjString = gameObject.name + "(Clone)";
-                GameObject temp = GameObject.Find(curCloneObjString);
-                // Perform some operation on each GameObject
-                // For instance, we can just print the GameObject's name:
-                if (curCloneObjString != myStaticObjString)
-                    temp.SetActive(false);
-                else
-                    temp.SetActive(true);
-
-            }
-
-        }
 
         private void Start()
         {
@@ -179,17 +152,21 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             StartGame();
         }
 
+
         private void StartGame()
         {
             CreatPlayer();
 
             if (TableAnchor.Instance != null) CreateInteractableObjects();
+
+            StartCoroutine(synchronizeObj());
         }
 
 
         private void CreateInteractableObjects()
         {
             MyCreation(readyPrefab);
+
         }
 
 
@@ -200,6 +177,40 @@ namespace MRTK.Tutorials.MultiUserCapabilities
 
         }
 
+
+        private IEnumerator synchronizeObj()
+        {
+            yield return new WaitForSeconds(0.5f);  // Wait for 1 second
+
+            Debug.Log("Initialization after join");
+
+            if (gameObjectList == null)
+            {
+                gameObjectList.Add(readyPrefab);
+                gameObjectList.Add(skullPrefab);
+                gameObjectList.Add(brainPrefab);
+                gameObjectList.Add(videoPrefab);
+            }
+
+
+            // Iterate through the list of GameObjects
+            foreach (GameObject gameObject in gameObjectList)
+            {
+
+
+                string curCloneObjString = gameObject.name + "(Clone)";
+                Debug.Log(curCloneObjString);
+                GameObject temp = GameObject.Find(curCloneObjString);
+                // Perform some operation on each GameObject
+                // For instance, we can just print the GameObject's name:
+                if (curCloneObjString != "Ready(Clone)" && temp != null)
+                    temp.SetActive(false);
+                if (temp == null)
+                    Debug.Log(curCloneObjString + "is null");
+
+
+            }
+        }
 
 
         private void createPrivatePV()
@@ -288,7 +299,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
         public void MyCreation(GameObject newTempObj)
         {
 
-            myStaticObjString = newTempObj.name + "(Clone)";
+
 
             removeAllObj();
 
