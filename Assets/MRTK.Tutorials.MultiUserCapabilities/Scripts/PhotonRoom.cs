@@ -264,7 +264,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             if (propertiesThatChanged.TryGetValue("propertyKey", out propertyValue))
             {
                 if (propertyValue.ToString() == "empty")
-                    removeAllObj;
+                    removeAllObj();
                 else
                 {
                     removeAllObj();
