@@ -372,7 +372,8 @@ namespace MRTK.Tutorials.MultiUserCapabilities
                     position.z);
                 Quaternion rotation = newTempObj.transform.rotation;
                 var go = PhotonNetwork.Instantiate(newTempObj.name, positionOnTopOfSurface, rotation);
-                Debug.Log("Null Object was inactive was given name was found: " + newTempObj + "(Clone)");
+                updateProperties(newTempObj.name);
+
             }
 
 
