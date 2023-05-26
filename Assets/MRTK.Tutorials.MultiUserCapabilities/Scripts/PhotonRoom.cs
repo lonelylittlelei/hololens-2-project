@@ -185,8 +185,6 @@ namespace MRTK.Tutorials.MultiUserCapabilities
 
             CreateInteractableObjects();
 
-
-
         }
 
 
@@ -207,6 +205,21 @@ namespace MRTK.Tutorials.MultiUserCapabilities
                 Debug.Log("Current User Obj is Null");
         }
 
+
+        private void DisableObject(string removingObjName)
+        {
+            string cloneObjName = removingObjName + "(Clone)";
+            GameObject cloneObj = GameObject.Find(cloneObjName);
+            if (cloneObj != null)
+            {
+                cloneObj.SetActive(false);
+                Debug.LogWarning("GameObject " + cloneObjName + " found.");
+            }
+            else
+            {
+                Debug.LogWarning("GameObject " + cloneObjName + " not found. It may have been destroyed.");
+            }
+        }
 
         private void removeAllObj()
         {
@@ -247,28 +260,30 @@ namespace MRTK.Tutorials.MultiUserCapabilities
         public void MyDeletion(GameObject removingObj)
         {
 
-            if (checkObjExist(removingObj))
-            {
-                createPrivatePV();
-                if (pv != null)
-                {
+            /* if (checkObjExist(removingObj))
+             {
+                 createPrivatePV();
+                 if (pv != null)
+                 {
 
-                    // Check if you are the owner before calling the RPC
-                    if (pv.IsMine)
-                    {
-                        pv.RPC("DisableObject", RpcTarget.All, removingObj.name);
-                        Debug.LogWarning("PhotonView found on ImageTarget.");
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Ownership request for PhotonView on ImageTarget was not successful.");
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning("PhotonView not found on ImageTarget.");
-                }
-            }
+                     // Check if you are the owner before calling the RPC
+                     if (pv.IsMine)
+                     {
+                         pv.RPC("DisableObject", RpcTarget.All, removingObj.name);
+                         Debug.LogWarning("PhotonView found on ImageTarget.");
+                     }
+                     else
+                     {
+                         Debug.LogWarning("Ownership request for PhotonView on ImageTarget was not successful.");
+                     }
+                 }
+                 else
+                 {
+                     Debug.LogWarning("PhotonView not found on ImageTarget.");
+                 }
+             }*/
+
+            DisableObject(removingObj.name);
         }
 
         public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
@@ -277,6 +292,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             if (propertiesThatChanged.TryGetValue("propertyKey", out propertyValue))
             {
                 Debug.Log("The property value has changed: " + propertyValue);
+                removeAllObj();
                 EnableObject(propertyValue.ToString());
             }
         }
@@ -317,7 +333,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
         {
 
 
-            removeAllObj();
+            
 
 
             if (PhotonNetwork.PrefabPool is DefaultPool pool)
@@ -362,6 +378,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             // never create before
             else
             {
+                removeAllObj();
                 var position = roverExplorerLocation.transform.position;
                 var positionOnTopOfSurface = new Vector3(position.x, position.y + 0.5f,
                     position.z);
