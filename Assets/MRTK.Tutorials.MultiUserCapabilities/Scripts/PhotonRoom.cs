@@ -265,7 +265,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             {
                 
                 removeAllObj();
-                EnableObject(propertyValue.ToString());
+                
                 dynamicChangeDescription(propertyValue.ToString());
             }
         }
@@ -274,7 +274,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
         // change the description
         private void dynamicChangeDescription(string objName) {
 
-            
+            EnableObject(objName);
             string updateText = "Welcome to HoloensDisplayer!";
             if (objName == "brainPrefab")
             {
