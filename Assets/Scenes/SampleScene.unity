@@ -1225,7 +1225,7 @@ MonoBehaviour:
   Group: 0
   prefixField: -1
   Synchronization: 3
-  OwnershipTransfer: 1
+  OwnershipTransfer: 2
   observableSearch: 2
   ObservedComponents:
   - {fileID: 834448297}
@@ -2331,7 +2331,7 @@ MonoBehaviour:
   Group: 0
   prefixField: -1
   Synchronization: 3
-  OwnershipTransfer: 1
+  OwnershipTransfer: 2
   observableSearch: 2
   ObservedComponents:
   - {fileID: 2119000224}
@@ -2549,7 +2549,7 @@ MonoBehaviour:
   Group: 0
   prefixField: -1
   Synchronization: 3
-  OwnershipTransfer: 1
+  OwnershipTransfer: 2
   observableSearch: 2
   ObservedComponents:
   - {fileID: 2142580770}

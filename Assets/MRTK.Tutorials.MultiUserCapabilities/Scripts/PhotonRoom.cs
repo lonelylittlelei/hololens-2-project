@@ -31,7 +31,6 @@ namespace MRTK.Tutorials.MultiUserCapabilities
         private Player[] photonPlayers;
         private int playersInRoom;
         private int myNumberInRoom;
-        private bool hasObjInRoom = false;
         private List<GameObject> gameObjectList = new List<GameObject>();
 
         public void OnSpeechKeywordRecognized(SpeechEventData eventData)
@@ -182,34 +181,12 @@ namespace MRTK.Tutorials.MultiUserCapabilities
         {
             yield return new WaitForSeconds(0.5f);  // Wait for 1 second
 
-            Debug.Log("Initialization after join");
+            removeAllObj();
 
-            if (gameObjectList == null)
-            {
-                gameObjectList.Add(readyPrefab);
-                gameObjectList.Add(skullPrefab);
-                gameObjectList.Add(brainPrefab);
-                gameObjectList.Add(videoPrefab);
-            }
+            CreateInteractableObjects();
 
 
-            // Iterate through the list of GameObjects
-            foreach (GameObject gameObject in gameObjectList)
-            {
 
-
-                string curCloneObjString = gameObject.name + "(Clone)";
-                Debug.Log(curCloneObjString);
-                GameObject temp = GameObject.Find(curCloneObjString);
-                // Perform some operation on each GameObject
-                // For instance, we can just print the GameObject's name:
-                if (curCloneObjString != "Ready(Clone)" && temp != null)
-                    temp.SetActive(false);
-                if (temp == null)
-                    Debug.Log(curCloneObjString + "is null");
-
-
-            }
         }
 
 
@@ -294,11 +271,50 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             }
         }
 
+        public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
+        {
+            object propertyValue;
+            if (propertiesThatChanged.TryGetValue("propertyKey", out propertyValue))
+            {
+                Debug.Log("The property value has changed: " + propertyValue);
+                EnableObject(propertyValue.ToString());
+            }
+        }
 
+        private void updateProperties(string newValue) {
+
+            ExitGames.Client.Photon.Hashtable propsToUpdate = new ExitGames.Client.Photon.Hashtable
+            {
+                { "propertyKey", newValue }
+            };
+
+            PhotonNetwork.CurrentRoom.SetCustomProperties(propsToUpdate);
+
+        }
+
+        private void EnableObject(string newTempObj)
+        {
+            // Find the parent object (which should be active)
+            GameObject parentObj = GameObject.Find("TableAnchor");
+            if (parentObj == null)
+                Debug.Log("Null TableAnchor");
+
+
+            // Find the inactive child object
+            Transform objTransform = parentObj.transform.Find(newTempObj + "(Clone)");
+
+            // Check if the object is not null (that is, it was found)
+            if (objTransform != null)
+            {
+                // Set the object to active
+                objTransform.gameObject.SetActive(true);
+                Debug.Log(objTransform.name);
+            }
+
+        }
 
         public void MyCreation(GameObject newTempObj)
         {
-
 
 
             removeAllObj();
@@ -321,7 +337,9 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             // Check if the object is not null (that is, it was found)
             if (objTransform != null)
             {
-                createPrivatePV();
+
+                updateProperties(newTempObj.name);
+                /*createPrivatePV();
                 if (pv != null)
                 {
 
@@ -339,7 +357,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
                 else
                 {
                     Debug.LogWarning("PhotonView not found on ImageTarget.");
-                }
+                }*/
             }
             // never create before
             else

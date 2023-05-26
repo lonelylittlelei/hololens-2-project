@@ -1,6 +1,8 @@
 ﻿using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using ExitGames.Client.Photon;
+
 
 namespace MRTK.Tutorials.MultiUserCapabilities
 {
@@ -95,8 +97,15 @@ namespace MRTK.Tutorials.MultiUserCapabilities
         private void CreateRoom()
         {
             Debug.Log("CreateRoom()");
-            var roomOptions = new RoomOptions { IsVisible = true, IsOpen = true, MaxPlayers = 10 };
-            PhotonNetwork.CreateRoom(roomName, roomOptions);
+    /*        var roomOptions = new RoomOptions ;*/
+            RoomOptions roomOptions = new RoomOptions() { IsVisible = true, IsOpen = true, MaxPlayers = 10 };
+
+            roomOptions.CustomRoomPropertiesForLobby = new string[] { "propertyKey" };
+            roomOptions.CustomRoomProperties = new Hashtable { { "propertyKey", "EMPTY" } };
+
+            PhotonNetwork.CreateRoom(roomName, roomOptions, TypedLobby.Default);
+
+            /*PhotonNetwork.CreateRoom(roomName, roomOptions);*/
             //PhotonNetwork.JoinOrCreateRoom(roomName, roomOptions)
         }
     }
