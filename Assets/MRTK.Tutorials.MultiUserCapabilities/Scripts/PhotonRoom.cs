@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Microsoft.MixedReality.Toolkit;
 using Microsoft.MixedReality.Toolkit.Input;
+using TMPro;  // Include the TextMeshPro namespace
 
 
 
@@ -22,9 +23,9 @@ namespace MRTK.Tutorials.MultiUserCapabilities
         [SerializeField] private GameObject brainPrefab = default;
         [SerializeField] private GameObject videoPrefab = default;
         [SerializeField] private Transform roverExplorerLocation = default;
-  
 
 
+        public GameObject dynamicDescription;
         private Vector3 anchorPosition;
         private Quaternion anchorRotation;
         private PhotonView pv;
@@ -213,11 +214,6 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             if (cloneObj != null)
             {
                 cloneObj.SetActive(false);
-                Debug.LogWarning("GameObject " + cloneObjName + " found.");
-            }
-            else
-            {
-                Debug.LogWarning("GameObject " + cloneObjName + " not found. It may have been destroyed.");
             }
         }
 
@@ -259,30 +255,6 @@ namespace MRTK.Tutorials.MultiUserCapabilities
 
         public void MyDeletion(GameObject removingObj)
         {
-
-            /* if (checkObjExist(removingObj))
-             {
-                 createPrivatePV();
-                 if (pv != null)
-                 {
-
-                     // Check if you are the owner before calling the RPC
-                     if (pv.IsMine)
-                     {
-                         pv.RPC("DisableObject", RpcTarget.All, removingObj.name);
-                         Debug.LogWarning("PhotonView found on ImageTarget.");
-                     }
-                     else
-                     {
-                         Debug.LogWarning("Ownership request for PhotonView on ImageTarget was not successful.");
-                     }
-                 }
-                 else
-                 {
-                     Debug.LogWarning("PhotonView not found on ImageTarget.");
-                 }
-             }*/
-
             DisableObject(removingObj.name);
         }
 
@@ -291,10 +263,46 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             object propertyValue;
             if (propertiesThatChanged.TryGetValue("propertyKey", out propertyValue))
             {
-                Debug.Log("The property value has changed: " + propertyValue);
+                
                 removeAllObj();
                 EnableObject(propertyValue.ToString());
+                dynamicChangeDescription(propertyValue.ToString());
             }
+        }
+
+
+        // change the description
+        private void dynamicChangeDescription(string objName) {
+
+            
+            string updateText = "Welcome to HoloensDisplayer!";
+            if (objName == "brainPrefab")
+            {
+                updateText = "The brain, the command center of the human nervous system, is divided into the cerebrum, cerebellum, and brainstem. The cerebrum handles thinking and learning, the cerebellum manages coordination, and the brainstem controls vital functions like heart rate and breathing. With its vast network of neurons, the brain enables communication and control throughout the body.";
+
+            }
+
+            else if (objName == "arteryPrefab")
+            {
+                updateText = "Arteries are blood vessels responsible for carrying oxygenated blood from the heart to the rest of the body. They have thick, elastic walls to withstand the high pressure of the blood pumped directly from the heart. The main artery leaving the heart is the aorta, and it branches into smaller arteries which reach every part of the body.";
+            }
+
+            else if (objName == "video") {
+               updateText = "Coiling is a minimally invasive technique used to treat aneurysms, particularly in the brain. Coiling can also refer to the winding or looping configuration found in many natural and man-made structures, from DNA molecules to the design of heating elements.";
+            }
+
+            TextMeshPro textMeshProComponent = dynamicDescription.GetComponent<TextMeshPro>();
+
+            if (textMeshProComponent != null)
+            {
+                textMeshProComponent.text = updateText;
+            }
+            else
+            {
+                Debug.LogError("No TextMeshProUGUI component found on " + dynamicDescription.name);
+            }
+            
+
         }
 
         private void updateProperties(string newValue) {
@@ -331,9 +339,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
 
         public void MyCreation(GameObject newTempObj)
         {
-
-
-            
+ 
 
 
             if (PhotonNetwork.PrefabPool is DefaultPool pool)
@@ -355,25 +361,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             {
 
                 updateProperties(newTempObj.name);
-                /*createPrivatePV();
-                if (pv != null)
-                {
-
-                    // Check if you are the owner before calling the RPC
-                    if (pv.IsMine)
-                    {
-                        pv.RPC("EnableObject", RpcTarget.All, newTempObj.name);
-                        Debug.LogWarning("PhotonView found on ImageTarget.");
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Ownership request for PhotonView on ImageTarget was not successful.");
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning("PhotonView not found on ImageTarget.");
-                }*/
+     
             }
             // never create before
             else
@@ -419,5 +407,47 @@ namespace MRTK.Tutorials.MultiUserCapabilities
 
            *//* Debug.Log("init: " + roverExplorerPrefab.GetPhotonView().ViewID);*//*
         }*/
+        /* if (checkObjExist(removingObj))
+            {
+                createPrivatePV();
+                if (pv != null)
+                {
+
+                    // Check if you are the owner before calling the RPC
+                    if (pv.IsMine)
+                    {
+                        pv.RPC("DisableObject", RpcTarget.All, removingObj.name);
+                        Debug.LogWarning("PhotonView found on ImageTarget.");
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Ownership request for PhotonView on ImageTarget was not successful.");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("PhotonView not found on ImageTarget.");
+                }
+            }*/
+        /*createPrivatePV();
+     if (pv != null)
+     {
+
+         // Check if you are the owner before calling the RPC
+         if (pv.IsMine)
+         {
+             pv.RPC("EnableObject", RpcTarget.All, newTempObj.name);
+             Debug.LogWarning("PhotonView found on ImageTarget.");
+         }
+         else
+         {
+             Debug.LogWarning("Ownership request for PhotonView on ImageTarget was not successful.");
+         }
+     }
+     else
+     {
+         Debug.LogWarning("PhotonView not found on ImageTarget.");
+     }*/
+
     }
 }

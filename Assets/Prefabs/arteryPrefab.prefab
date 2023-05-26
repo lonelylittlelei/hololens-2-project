@@ -129,7 +129,7 @@ GameObject:
   - component: {fileID: 2503759691518702962}
   - component: {fileID: 7842786558662278464}
   m_Layer: 0
-  m_Name: clone POST 2 FILE_artery 1
+  m_Name: arteryPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
