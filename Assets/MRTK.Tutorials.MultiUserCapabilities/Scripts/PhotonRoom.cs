@@ -263,10 +263,14 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             object propertyValue;
             if (propertiesThatChanged.TryGetValue("propertyKey", out propertyValue))
             {
-                
-                removeAllObj();
-                
-                dynamicChangeDescription(propertyValue.ToString());
+                if (propertyValue.ToString() == "empty")
+                    removeAllObj;
+                else
+                {
+                    removeAllObj();
+                    EnableObject(propertyValue.ToString());
+                    dynamicChangeDescription(propertyValue.ToString());
+                }
             }
         }
 
@@ -274,7 +278,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
         // change the description
         private void dynamicChangeDescription(string objName) {
 
-            EnableObject(objName);
+            
             string updateText = "Welcome to HoloensDisplayer!";
             if (objName == "brainPrefab")
             {
@@ -367,13 +371,14 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             else
             {
                 removeAllObj();
+                updateProperties("empty");
                 var position = roverExplorerLocation.transform.position;
                 var positionOnTopOfSurface = new Vector3(position.x, position.y + 0.5f,
                     position.z);
                 Quaternion rotation = newTempObj.transform.rotation;
                 var go = PhotonNetwork.Instantiate(newTempObj.name, positionOnTopOfSurface, rotation);
-                updateProperties(newTempObj.name);
 
+                
             }
 
 
