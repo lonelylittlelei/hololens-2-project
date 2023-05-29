@@ -11,6 +11,7 @@ using TMPro;  // Include the TextMeshPro namespace
 
 
 
+
 namespace MRTK.Tutorials.MultiUserCapabilities
 {
     public class PhotonRoom : MonoBehaviourPunCallbacks, IInRoomCallbacks, IMixedRealitySpeechHandler
@@ -33,6 +34,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
         private int playersInRoom;
         private int myNumberInRoom;
         private List<GameObject> gameObjectList = new List<GameObject>();
+        private AudioController audioController;
 
         public void OnSpeechKeywordRecognized(SpeechEventData eventData)
 
@@ -60,6 +62,15 @@ namespace MRTK.Tutorials.MultiUserCapabilities
                             break;
                         }
                     }
+
+                    break;
+
+                case "mute":
+                    audioController.StopAudio();
+                    break;
+
+                case "read":
+                    audioController.PlayAudio(curGameObj);
 
                     break;
 
@@ -137,6 +148,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
                 this.gameObjectList.Add(videoPrefab);
             }
 
+            audioController = FindObjectOfType<AudioController>();
 
         }
 
@@ -251,9 +263,9 @@ namespace MRTK.Tutorials.MultiUserCapabilities
                             DisableObject(gameObject.name);
                         else
                         {
-                            Debug.Log("found Current game obj" + curGameObj);
                             EnableObject(curGameObj);
                             dynamicChangeDescription(curGameObj);
+                            
                         }
 
                     }

@@ -86,3 +86,17 @@ MonoBehaviour:
       id: 0
       description: None
       axisConstraint: 0
+  - localizationKey: 
+    keyword: Stop Read
+    keyCode: 0
+    action:
+      id: 0
+      description: None
+      axisConstraint: 0
+  - localizationKey: 
+    keyword: Start Read
+    keyCode: 0
+    action:
+      id: 0
+      description: None
+      axisConstraint: 0
