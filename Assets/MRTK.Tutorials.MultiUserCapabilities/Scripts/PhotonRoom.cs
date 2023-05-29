@@ -45,6 +45,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             {
 
                 case "next":
+                    audioController.StopAudio();
 
                     for (int i = 0; i < gameObjectList.Count; i++)
                     {
@@ -265,7 +266,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
                         {
                             EnableObject(curGameObj);
                             dynamicChangeDescription(curGameObj);
-                            
+                            audioController.StopAudio();
                         }
 
                     }
