@@ -24,7 +24,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
         [SerializeField] private GameObject videoPrefab = default;
         [SerializeField] private Transform roverExplorerLocation = default;
 
-
+        private string curGameObj = "Ready";
         public GameObject dynamicDescription;
         private Vector3 anchorPosition;
         private Quaternion anchorRotation;
@@ -159,7 +159,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
 
             if (TableAnchor.Instance != null) CreateInteractableObjects();
 
-            StartCoroutine(synchronizeObj());
+            /*    StartCoroutine(synchronizeObj());*/
         }
 
 
@@ -173,38 +173,11 @@ namespace MRTK.Tutorials.MultiUserCapabilities
         private void CreatPlayer()
         {
             var player = PhotonNetwork.Instantiate(photonUserPrefab.name, new Vector3(0f, 0.2f, 0f), Quaternion.identity);
-            
+
 
         }
 
 
-        private IEnumerator synchronizeObj()
-        {
-            yield return new WaitForSeconds(0.5f);  // Wait for 1 second
-
-            removeAllObj();
-
-            CreateInteractableObjects();
-
-        }
-
-
-        private void createPrivatePV()
-        {
-
-            int playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
-            string userObjName = "User" + playerCount;
-            GameObject userObj = GameObject.Find(userObjName);
-
-            if (userObj != null)
-            {
-                PhotonView photonView = userObj.GetComponent<PhotonView>();
-                Debug.Log(userObj.gameObject.name);
-                pv = photonView;
-            }
-            else
-                Debug.Log("Current User Obj is Null");
-        }
 
 
         private void DisableObject(string removingObjName)
@@ -267,18 +240,35 @@ namespace MRTK.Tutorials.MultiUserCapabilities
                     removeAllObj();
                 else
                 {
-                    removeAllObj();
-                    EnableObject(propertyValue.ToString());
-                    dynamicChangeDescription(propertyValue.ToString());
+                    curGameObj = propertyValue.ToString();
+                    Debug.Log("Current game obj" + curGameObj);
+                    foreach (GameObject gameObject in gameObjectList)
+                    {
+
+                        // Perform some operation on each GameObject
+                        // For instance, we can just print the GameObject's name:
+                        if (gameObject.name != curGameObj)
+                            DisableObject(gameObject.name);
+                        else
+                        {
+                            Debug.Log("found Current game obj" + curGameObj);
+                            EnableObject(curGameObj);
+                            dynamicChangeDescription(curGameObj);
+                        }
+
+                    }
+
                 }
             }
+
+
         }
 
 
         // change the description
         private void dynamicChangeDescription(string objName) {
 
-            
+
             string updateText = "Welcome to HoloensDisplayer!";
             if (objName == "brainPrefab")
             {
@@ -292,7 +282,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             }
 
             else if (objName == "video") {
-               updateText = "Coiling is a minimally invasive technique used to treat aneurysms, particularly in the brain. Coiling can also refer to the winding or looping configuration found in many natural and man-made structures, from DNA molecules to the design of heating elements.";
+                updateText = "Coiling is a minimally invasive technique used to treat aneurysms, particularly in the brain. Coiling can also refer to the winding or looping configuration found in many natural and man-made structures, from DNA molecules to the design of heating elements.";
             }
 
             TextMeshPro textMeshProComponent = dynamicDescription.GetComponent<TextMeshPro>();
@@ -305,7 +295,7 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             {
                 Debug.LogError("No TextMeshProUGUI component found on " + dynamicDescription.name);
             }
-            
+
 
         }
 
@@ -336,14 +326,13 @@ namespace MRTK.Tutorials.MultiUserCapabilities
             {
                 // Set the object to active
                 objTransform.gameObject.SetActive(true);
-                Debug.Log(objTransform.name);
             }
 
         }
 
         public void MyCreation(GameObject newTempObj)
         {
- 
+
 
 
             if (PhotonNetwork.PrefabPool is DefaultPool pool)
@@ -360,34 +349,25 @@ namespace MRTK.Tutorials.MultiUserCapabilities
 
             // Find the inactive child object
             Transform objTransform = parentObj.transform.Find(newTempObj.name + "(Clone)");
-            // Check if the object is not null (that is, it was found)
-            if (objTransform != null)
-            {
-
-                updateProperties(newTempObj.name);
-     
-            }
+            // Check if the object is  null (that is, it was not found)
             // never create before
-            else
+            if (objTransform == null)
             {
-                removeAllObj();
-                updateProperties("empty");
+                /*   removeAllObj();*/
                 var position = roverExplorerLocation.transform.position;
                 var positionOnTopOfSurface = new Vector3(position.x, position.y + 0.5f,
                     position.z);
                 Quaternion rotation = newTempObj.transform.rotation;
                 var go = PhotonNetwork.Instantiate(newTempObj.name, positionOnTopOfSurface, rotation);
 
-                
+
             }
-
-
-
+            updateProperties(newTempObj.name);
 
 
         }
-
-
+    }
+}
         // private void CreateMainLunarModule()
         // {
         //     module = PhotonNetwork.Instantiate(roverExplorerPrefab.name, Vector3.zero, Quaternion.identity);
@@ -402,58 +382,88 @@ namespace MRTK.Tutorials.MultiUserCapabilities
         //     module.transform.localPosition = moduleLocation;
         // }
 
-        /*    private void CreateInteractableObjects()
+/*    private void CreateInteractableObjects()
+{
+    var position = roverExplorerLocation.position;
+    var positionOnTopOfSurface = new Vector3(position.x, position.y + 0.3f,
+        position.z);
+
+    var go = PhotonNetwork.Instantiate(roverExplorerPrefab.name, positionOnTopOfSurface,
+        roverExplorerLocation.rotation);
+
+   *//* Debug.Log("init: " + roverExplorerPrefab.GetPhotonView().ViewID);*//*
+}*/
+/* if (checkObjExist(removingObj))
+    {
+        createPrivatePV();
+        if (pv != null)
         {
-            var position = roverExplorerLocation.position;
-            var positionOnTopOfSurface = new Vector3(position.x, position.y + 0.3f,
-                position.z);
 
-            var go = PhotonNetwork.Instantiate(roverExplorerPrefab.name, positionOnTopOfSurface,
-                roverExplorerLocation.rotation);
-
-           *//* Debug.Log("init: " + roverExplorerPrefab.GetPhotonView().ViewID);*//*
-        }*/
-        /* if (checkObjExist(removingObj))
+            // Check if you are the owner before calling the RPC
+            if (pv.IsMine)
             {
-                createPrivatePV();
-                if (pv != null)
-                {
+                pv.RPC("DisableObject", RpcTarget.All, removingObj.name);
+                Debug.LogWarning("PhotonView found on ImageTarget.");
+            }
+            else
+            {
+                Debug.LogWarning("Ownership request for PhotonView on ImageTarget was not successful.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("PhotonView not found on ImageTarget.");
+        }
+    }*/
+/*createPrivatePV();
+if (pv != null)
+{
 
-                    // Check if you are the owner before calling the RPC
-                    if (pv.IsMine)
-                    {
-                        pv.RPC("DisableObject", RpcTarget.All, removingObj.name);
-                        Debug.LogWarning("PhotonView found on ImageTarget.");
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Ownership request for PhotonView on ImageTarget was not successful.");
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning("PhotonView not found on ImageTarget.");
-                }
-            }*/
-        /*createPrivatePV();
-     if (pv != null)
-     {
+ // Check if you are the owner before calling the RPC
+ if (pv.IsMine)
+ {
+     pv.RPC("EnableObject", RpcTarget.All, newTempObj.name);
+     Debug.LogWarning("PhotonView found on ImageTarget.");
+ }
+ else
+ {
+     Debug.LogWarning("Ownership request for PhotonView on ImageTarget was not successful.");
+ }
+}
+else
+{
+ Debug.LogWarning("PhotonView not found on ImageTarget.");
+}*/
 
-         // Check if you are the owner before calling the RPC
-         if (pv.IsMine)
-         {
-             pv.RPC("EnableObject", RpcTarget.All, newTempObj.name);
-             Debug.LogWarning("PhotonView found on ImageTarget.");
-         }
-         else
-         {
-             Debug.LogWarning("Ownership request for PhotonView on ImageTarget was not successful.");
-         }
-     }
-     else
-     {
-         Debug.LogWarning("PhotonView not found on ImageTarget.");
-     }*/
+
+/*  private IEnumerator synchronizeObj()
+  {
+      yield return new WaitForSeconds(0.5f);  // Wait for 1 second
+
+      removeAllObj();
+
+      CreateInteractableObjects();
+
+  }
+*/
+
+/*        private void createPrivatePV()
+        {
+
+            int playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
+            string userObjName = "User" + playerCount;
+            GameObject userObj = GameObject.Find(userObjName);
+
+            if (userObj != null)
+            {
+                PhotonView photonView = userObj.GetComponent<PhotonView>();
+                Debug.Log(userObj.gameObject.name);
+                pv = photonView;
+            }
+            else
+                Debug.Log("Current User Obj is Null");
+        }
 
     }
 }
+     */
