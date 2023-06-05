@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isCustomProfile: 1
   startBehavior: 0
-  recognitionConfidenceLevel: 1
+  recognitionConfidenceLevel: 0
   speechCommands:
   - localizationKey: 
     keyword: Scale Up
@@ -87,14 +87,14 @@ MonoBehaviour:
       description: None
       axisConstraint: 0
   - localizationKey: 
-    keyword: Stop Read
+    keyword: mute
     keyCode: 0
     action:
       id: 0
       description: None
       axisConstraint: 0
   - localizationKey: 
-    keyword: Start Read
+    keyword: read
     keyCode: 0
     action:
       id: 0

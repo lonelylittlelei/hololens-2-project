@@ -24,7 +24,7 @@ MonoBehaviour:
   inputSystemProfile: {fileID: 11400000, guid: 33b974e99e19f4e4985297d9a569184b, type: 2}
   inputSystemType:
     reference: Microsoft.MixedReality.Toolkit.Input.MixedRealityInputSystem, Microsoft.MixedReality.Toolkit.Services.InputSystem
-  enableBoundarySystem: 1
+  enableBoundarySystem: 0
   boundarySystemType:
     reference: Microsoft.MixedReality.Toolkit.Boundary.MixedRealityBoundarySystem,
       Microsoft.MixedReality.Toolkit.Services.BoundarySystem
@@ -35,7 +35,7 @@ MonoBehaviour:
   teleportSystemType:
     reference: Microsoft.MixedReality.Toolkit.Teleport.MixedRealityTeleportSystem,
       Microsoft.MixedReality.Toolkit.Services.TeleportSystem
-  enableSpatialAwarenessSystem: 1
+  enableSpatialAwarenessSystem: 0
   spatialAwarenessSystemType:
     reference: Microsoft.MixedReality.Toolkit.SpatialAwareness.MixedRealitySpatialAwarenessSystem,
       Microsoft.MixedReality.Toolkit.Services.SpatialAwarenessSystem
