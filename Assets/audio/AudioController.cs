@@ -18,10 +18,10 @@ public class AudioController : MonoBehaviour
     public void PlayAudio(string curObjectStr)
     {
         Debug.Log("audio: " + curObjectStr);
-        if(curObjectStr == "arteryPrefab")
+        if(curObjectStr == "artery")
             audioSource.clip = artery;
 
-        else if(curObjectStr == "brainPrefab")
+        else if(curObjectStr == "brain")
             audioSource.clip = brain;
 
         else if(curObjectStr == "video")

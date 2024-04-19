@@ -25,9 +25,9 @@ public class VoiceTransformController : MonoBehaviour, IMixedRealitySpeechHandle
         CoreServices.InputSystem?.RegisterHandler<IMixedRealitySpeechHandler>(this);
         table = GameObject.Find("Table");
 
-        startingPosition = obj.transform.position;
-        startingScale = obj.transform.localScale;
-        startingRotation = obj.transform.eulerAngles;
+        startingPosition = gameObject.transform.position;
+        startingScale = gameObject.transform.localScale;
+        startingRotation = gameObject.transform.eulerAngles;
     }
 
     public void OnSpeechKeywordRecognized(SpeechEventData eventData)
@@ -40,53 +40,53 @@ public class VoiceTransformController : MonoBehaviour, IMixedRealitySpeechHandle
 
             case "scale up":
 
-                obj.transform.localScale += new Vector3(scaleFactor, scaleFactor, scaleFactor);
+                gameObject.transform.localScale += new Vector3(scaleFactor, scaleFactor, scaleFactor);
                 Debug.Log("Scale UP");
 
                 break;
 
             case "scale down":
 
-                obj.transform.localScale -= new Vector3(scaleFactor, scaleFactor, scaleFactor);
+                gameObject.transform.localScale -= new Vector3(scaleFactor, scaleFactor, scaleFactor);
 
                 break;
 
             case "rotate left":
 
-                obj.transform.eulerAngles = new Vector3(
-                    obj.transform.eulerAngles.x,
-                    obj.transform.eulerAngles.y + rotationFactor,
-                    obj.transform.eulerAngles.z
+                gameObject.transform.eulerAngles = new Vector3(
+                    gameObject.transform.eulerAngles.x,
+                    gameObject.transform.eulerAngles.y + rotationFactor,
+                    gameObject.transform.eulerAngles.z
                 );
 
                 break;
 
             case "rotate right":
 
-                obj.transform.eulerAngles = new Vector3(
-                    obj.transform.eulerAngles.x,
-                    obj.transform.eulerAngles.y - rotationFactor,
-                    obj.transform.eulerAngles.z
+                gameObject.transform.eulerAngles = new Vector3(
+                    gameObject.transform.eulerAngles.x,
+                    gameObject.transform.eulerAngles.y - rotationFactor,
+                    gameObject.transform.eulerAngles.z
                 );
 
                 break;
 
             case "rotate up":
 
-                obj.transform.eulerAngles = new Vector3(
-                    obj.transform.eulerAngles.x + rotationFactor,
-                    obj.transform.eulerAngles.y,
-                    obj.transform.eulerAngles.z
+                gameObject.transform.eulerAngles = new Vector3(
+                    gameObject.transform.eulerAngles.x + rotationFactor,
+                    gameObject.transform.eulerAngles.y,
+                    gameObject.transform.eulerAngles.z
                 );
 
                 break;
 
             case "rotate down":
 
-                obj.transform.eulerAngles = new Vector3(
-                    obj.transform.eulerAngles.x - rotationFactor,
-                    obj.transform.eulerAngles.y,
-                    obj.transform.eulerAngles.z
+                gameObject.transform.eulerAngles = new Vector3(
+                    gameObject.transform.eulerAngles.x - rotationFactor,
+                    gameObject.transform.eulerAngles.y,
+                    gameObject.transform.eulerAngles.z
                 );
 
                 break;
@@ -109,8 +109,8 @@ public class VoiceTransformController : MonoBehaviour, IMixedRealitySpeechHandle
 
     public void resetObject()
     {
-        obj.transform.position = new Vector3(table.transform.position.x, table.transform.position.y + 0.25f, table.transform.position.z);
-        obj.transform.localScale = startingScale;
-        obj.transform.eulerAngles = startingRotation;
+        gameObject.transform.position = new Vector3(table.transform.position.x, table.transform.position.y + 0.25f, table.transform.position.z);
+        gameObject.transform.localScale = startingScale;
+        gameObject.transform.eulerAngles = startingRotation;
     }
 }

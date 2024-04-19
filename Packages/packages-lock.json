@@ -1,23 +1,5 @@
 {
   "dependencies": {
-    "com.microsoft.azure.spatial-anchors-sdk.core": {
-      "version": "file:spatial-anchors-sdk/com.microsoft.azure.spatial-anchors-sdk.core-2.13.3.tgz",
-      "depth": 0,
-      "source": "local-tarball",
-      "dependencies": {
-        "com.unity.subsystemregistration": "1.0.6",
-        "com.unity.xr.arsubsystems": "4.0.8",
-        "com.unity.xr.arfoundation": "4.0.12"
-      }
-    },
-    "com.microsoft.azure.spatial-anchors-sdk.windows": {
-      "version": "file:spatial-anchors-sdk/com.microsoft.azure.spatial-anchors-sdk.windows-2.13.3.tgz",
-      "depth": 0,
-      "source": "local-tarball",
-      "dependencies": {
-        "com.microsoft.azure.spatial-anchors-sdk.core": "2.13.3"
-      }
-    },
     "com.microsoft.mixedreality.openxr": {
       "version": "file:MixedReality/com.microsoft.mixedreality.openxr-1.6.0.tgz",
       "depth": 0,
@@ -45,14 +27,11 @@
         "com.unity.textmeshpro": "2.1.4"
       }
     },
-    "com.ptc.vuforia.engine": {
-      "version": "git+https://git-packages.developer.vuforia.com#9.7.4",
+    "com.microsoft.mixedreality.worldlockingtools": {
+      "version": "file:MixedReality/com.microsoft.mixedreality.worldlockingtools-1.5.9.tgz",
       "depth": 0,
-      "source": "git",
-      "dependencies": {
-        "com.unity.ugui": "1.0.0"
-      },
-      "hash": "541e0ca0453d25e317491eaac7cdb4f372133e3f"
+      "source": "local-tarball",
+      "dependencies": {}
     },
     "com.unity.collab-proxy": {
       "version": "1.17.6",
