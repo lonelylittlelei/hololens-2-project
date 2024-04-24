@@ -39,8 +39,8 @@ public class PersistenceHandler : MonoBehaviour
     private const byte OBJECT_NONE = 0;
     private const byte OBJECT_VIDEO_STREAM = 1;
     private const byte OBJECT_MESH = 2;
-    public byte byteObjectType = OBJECT_NONE;
-    private int streamCount = 0;
+    public byte byteObjectType = OBJECT_NONE; //might want to make this unserializable so not able to change in editor
+    //private int streamCount = 0;
     TextMeshPro uiText;
     ObjectList list;
     private void Start()
@@ -51,6 +51,61 @@ public class PersistenceHandler : MonoBehaviour
         //LoadOnStartup();
         //StartCoroutine(AutoSave());
     }
+
+    //CreateObject is the only method referenced outside of Persistence handler
+    //could probably be added to network controller to get rid of this script
+
+    //Called from network controller when host transmits saved objects 
+    
+    // Method to dynamically create an object based on its type
+    public GameObject CreateObject(string objectType, string id, int streamID)
+    {
+        // Use the provided ID or generate a new one if none is provided or if the one provided is null
+        //originally, in argument "string id = null" but this resulted in multiple id's being created for a single object
+        string objectId = id ?? Guid.NewGuid().ToString();
+
+        GameObject obj = null;
+
+        // Clone the prototype object
+        if ("VideoPanel".Equals(objectType))
+        {
+            obj = Instantiate(quadPrototype);
+            byteObjectType = OBJECT_VIDEO_STREAM;
+        }
+        else if ("MeshObject".Equals(objectType))
+        {
+            obj = Instantiate(meshPrototype);
+            byteObjectType = OBJECT_MESH; 
+        }
+        else
+        {
+            Debug.LogError("Unknown object type: " + objectType);
+            return null;
+        }
+
+        obj.name = objectType + objectId;
+        Debug.Log(obj.name);
+        //list.Add(obj);  
+        // Reset the object's transformations or other properties
+        obj.transform.position = Vector3.zero;
+        obj.transform.rotation = Quaternion.identity;
+        obj.transform.localScale = Vector3.one;
+
+        // Activate the object if the prototype was inactive
+        obj.SetActive(true);
+
+       // Add TrackedObject component and set its ID
+       
+        TrackedObject trackedObject = obj.AddComponent<TrackedObject>();
+        trackedObject.id = objectId;
+        trackedObject.object_type = byteObjectType;
+        //streamCount++;
+        trackedObject.stream_id = streamID;        // Set to first stream for now, make dynamic later!!!!!!!!!!!!!!
+
+        list.Add(obj); //for associated info
+        return obj;
+    }
+
 
     /*public void Save()
     {
@@ -128,61 +183,7 @@ public class PersistenceHandler : MonoBehaviour
         }
     }*/
 
-    //CreateObject is the only method referenced outside of Persistence handler
-    //could probably be added to network controller to rid of this script
-
-    //Called from network controller when host transmits saved objects 
     
-    // Method to dynamically create an object based on its type
-    public GameObject CreateObject(string objectType, string id)
-    {
-        // Use the provided ID or generate a new one if none is provided or if the one provided is null
-        //originally, in argument "string id = null" but this resulted in multiple id's being created for a single object
-        string objectId = id ?? Guid.NewGuid().ToString();
-
-        GameObject obj = null;
-
-        // Clone the prototype object
-        if ("VideoPanel".Equals(objectType))
-        {
-            obj = Instantiate(quadPrototype);
-            byteObjectType = OBJECT_VIDEO_STREAM;
-        }
-        else if ("MeshObject".Equals(objectType))
-        {
-            obj = Instantiate(meshPrototype);
-            byteObjectType = OBJECT_MESH; 
-        }
-        else
-        {
-            Debug.LogError("Unknown object type: " + objectType);
-            return null;
-        }
-
-        obj.name = objectType + objectId;
-        Debug.Log(obj.name);
-        //list.Add(obj);  
-        // Reset the object's transformations or other properties
-        obj.transform.position = Vector3.zero;
-        obj.transform.rotation = Quaternion.identity;
-        obj.transform.localScale = Vector3.one;
-
-        // Activate the object if the prototype was inactive
-        obj.SetActive(true);
-
-       // Add TrackedObject component and set its ID
-       
-        TrackedObject trackedObject = obj.AddComponent<TrackedObject>();
-        trackedObject.id = objectId;
-        trackedObject.object_type = byteObjectType;
-        streamCount++;
-        trackedObject.stream_id = streamCount;        // Set to first stream for now, make dynamic later!!!!!!!!!!!!!!
-
-        //list.Add(obj); //for associated info
-        return obj;
-    }
-
-
     // Method to create a default VideoPanel if none exist
   /*  //no references for these, not needed rn
      

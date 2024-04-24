@@ -31,16 +31,18 @@ public class NetworkController : MonoBehaviour
 
     // Define message types using enum - cant use define in C#
     // Define message types using const
+    //these are for messages sent over connection with host
     private const byte MSG_TYPE_IMAGE = 0;
     private const byte MSG_TYPE_OBJECT = 1;
     private const byte MSG_TYPE_MESH_DATA = 2;
 
     // Define object types using const
+    //these are for object types defined in TrackedObject class
     private const byte OBJECT_NONE = 0;
     private const byte OBJECT_VIDEO_STREAM = 1;
     private const byte OBJECT_MESH = 2;
 
-    //NEED TO MODIFY:
+    //NEED TO MODIFY TO YOUR OWN IP ADDRESS:
     //private string ServerIpAddress;
     private string ServerIpAddress = "192.168.0.120";           // should be petergrp5g IP on my laptop
 
@@ -50,7 +52,8 @@ public class NetworkController : MonoBehaviour
     public UDPMessageEvent udpEvent = null;
 
     private TcpClient client;
-    private Thread receiverThread;
+    private Thread receiverThread;  //Threads used to run multiple functions at a time
+                                    //With Unity, a lot of things have to happen on main dispatcher thread
 
     private volatile bool continueReceiving = true;
     private NetworkStream stream;
@@ -88,7 +91,7 @@ public class NetworkController : MonoBehaviour
         receiverThread.IsBackground = true;
         receiverThread.Start();
 
-#if !UNITY_EDITOR //UDP connection not doing much right now except transmitting over IP address, may change if David Hocking updates
+#if !UNITY_EDITOR //UDP connection not doing much right now except transmitting over IP address, may change if David Hocking updates, he was looking
         // Start listening for UDP broadcasts using DatagramSocket
         StartUdpListener();
 #else
@@ -179,7 +182,7 @@ public class NetworkController : MonoBehaviour
     {
         MainThreadDispatcher.Enqueue(() =>
         {
-            uiText.text += "\nReceived UDP message of some sort";
+           // uiText.text += "\nReceived UDP message of some sort";
         });     
 
         try
@@ -431,7 +434,7 @@ public class NetworkController : MonoBehaviour
          // The textures in the stream object should now be valid. 
     }
 
-    private void ProcessObjectPacket(byte[] messageData, int messageSize)
+    private void ProcessObjectPacket(byte[] messageData, int messageSize) //"Tracked Object" class o "PFObject" on pathfinder
     {
 
         // Deserialize - the first 16 bytes is the GUID
@@ -509,11 +512,11 @@ public class NetworkController : MonoBehaviour
                 GameObject createdObject;
                 if (objectType == OBJECT_VIDEO_STREAM)
                 {
-                    createdObject = obj.CreateObject((string)"VideoPanel", update_id.ToString());        // This creates the GAME OBJECT
+                    createdObject = obj.CreateObject((string)"VideoPanel", update_id.ToString(), streamID);        // This creates the GAME OBJECT
                 }
                 else if (objectType == OBJECT_MESH)
                 {
-                    createdObject = obj.CreateObject((string)"MeshObject", update_id.ToString());        // This creates the GAME OBJECT
+                    createdObject = obj.CreateObject((string)"MeshObject", update_id.ToString(), streamID);        // This creates the GAME OBJECT
                     
                 }
                 else
@@ -537,10 +540,28 @@ public class NetworkController : MonoBehaviour
         Array.Copy(messageData, offset, meshData, 0, messageSize - offset);
 
         //int count = 0;
-
-
+        int listCount = list.GetListCount();
+        
         MainThreadDispatcher.Enqueue(() => {
 
+            //added because of the duplicating models with multiple clients but I think it was an issue in persistence handler assigning streamid
+            //this checking of list may not be needed
+            if (listCount != 0)
+            {
+                List<GameObject> allObj = list.GetAll();
+                foreach (GameObject gameObj in allObj)
+                {
+                    if(gameObj.GetComponent<TrackedObject>().stream_id == id)
+                    {
+                        GameObject parent = gameObj.gameObject; //get the gameobject that the tracked object script is attached to
+                        parent.SetActive(true); //findobjectsoftype should only return active objects, but just in case
+                        MeshLoader mesh = parent.GetComponent<MeshLoader>(); //get the meshloader script that should be attached to the object
+                        mesh.LoadModel(meshData);//load the model again with the meshdata that was just sent
+
+                        return;
+                    }
+                }
+            }
             foreach (var trackObj in FindObjectsOfType<TrackedObject>())
             {
                 //count++;Debug.Log(count+ "tracked objects so far");
@@ -562,7 +583,7 @@ public class NetworkController : MonoBehaviour
 
             }
 
-            //if here, no object already created.
+            //if here, no mesh object already created.
 
             //basically create object function in persistence handler
             //uiText.text += ("No object with streamid" + id + "exists, creating one");
@@ -593,8 +614,12 @@ public class NetworkController : MonoBehaviour
             //Load the mesh that was just sent
             MeshLoader meshLoader = obj.GetComponent<MeshLoader>();
             meshLoader.LoadModel(meshData);
-            
-            //list.Add(obj); //for associated info
+
+            //if (!allObj.Contains(obj))
+            //{
+                list.Add(obj); //for associated info
+            //}
+           
         });
         //MAKE SURE TO USE MAIN THREAD DISPATCHER!!!!
 

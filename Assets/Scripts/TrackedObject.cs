@@ -58,6 +58,7 @@ public class TrackedObject : MonoBehaviour
     private void Start()
     {
         // Set the postion of this object to 0,0,100 == this will spawn it a long way away and it will move on the first update
+        //i set position to appear before user, wasn't automatically moving for some reason
         transform.position = new Vector3((float)-0.5, 0, 1);
         // Set the rotation of this object to 0,0,0
         transform.rotation = Quaternion.Euler(0, 0, 0);
@@ -144,6 +145,8 @@ public class TrackedObject : MonoBehaviour
             {
                 setAspectRatio(imageAspectRatio);
             }
+
+            //could add something to check and change if mesh is active?
 
         }
         else        // Or... we are not receiving a network update

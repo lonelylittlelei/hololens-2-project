@@ -40,9 +40,10 @@ public class MeshLoader : MonoBehaviour
     }
     public void LoadModel(byte[] array)
     {
-        //list.Add(gameObject);
+        list = GameObject.Find("ObjectList").GetComponent<ObjectList>(); //for some reason, list was coming up unassinged?? start may not have been called
         mesh = ReadByteSTL(array); //create the mesh
-        AddMesh(); //add it to object (make it viewable in scene)
+        AddMesh(); //add it to object (make it viewable in scene)  
+        list.CheckRenderStatus(); //check and make sure that only one mesh is rendered in scene
     }
     
 
@@ -149,7 +150,7 @@ public class MeshLoader : MonoBehaviour
         }
     }
 
-    private void AddBoxCollider(Mesh mesh)
+    private void AddBoxCollider(Mesh mesh) 
     {
         BoxCollider collider = gameObject.GetComponent<BoxCollider>();
         if (collider == null)
@@ -160,6 +161,7 @@ public class MeshLoader : MonoBehaviour
         collider.size = mesh.bounds.size;
     }
 
+    
     private Mesh ReadByteSTL(byte[] data) //if using the tcp transfer, use this probably?
     {
         if (data == null)

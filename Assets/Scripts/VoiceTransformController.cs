@@ -99,8 +99,6 @@ public class VoiceTransformController : MonoBehaviour, IMixedRealitySpeechHandle
 
             default:
 
-                Debug.Log($"Unknown option { eventData.Command.Keyword}");
-
                 break;
 
         }

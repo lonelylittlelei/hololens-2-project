@@ -40,6 +40,9 @@ public class SpeechCommandReceiver : MonoBehaviour, IMixedRealitySpeechHandler
             case "reinitialize":
                 ResetScene();
                 break;
+            default:
+              
+                break;
         }
     }
 
