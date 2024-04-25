@@ -1,6 +1,6 @@
 # HoloLens 2 AR Visualization of Neurovascular Aneurysm
 
-This project was developed by 4th-year Computer Science students Connor Haines, Justin Weller, Finn Ferguson, and XuanRan Qi at Western University under the supervision of Dr. Elvis Chen at Robarts Research Institute in 2022-23.
+This project was originally developed by 4th-year Computer Science students Connor Haines, Justin Weller, Finn Ferguson, and XuanRan Qi at Western University under the supervision of Dr. Elvis Chen at Robarts Research Institute in 2022-23.
 
 **Video Demo:** https://www.youtube.com/watch?v=BPGqZ186OqE
 
@@ -35,6 +35,14 @@ Frozen World Engine is used for world-locking, and creating a spatial map for ea
 ## Structure
 The system uses a combination of World Locking Tools and Pathfinder GUI's Tracked Object class to establish a local coordinate system for each device and synchronized interactions.
 
+### Summary
+When Device 1 connects to the host server, any stl files on the desktop of the host are sent to Device 1. The data packages are received by Network Controller and the stl data is converted into a mesh. The tracked object data is shared with the host server. When Device 2 connects to the server, first the tracked object data is shared. Once the appropriate tracked objects are created, the stl files are sent to all clients again. Both devices will convert and load each mesh again, to ensure that both devices are viewing the same object. 
+
+The tracked object component will send updates of the object's position, rotation, and scale to the host, and from the host these updates are sent to all clients so these interactions are synchronized across all devices. Linear interpolation is used to smooth out the trasition between these updates. For example, if Device 1 grabs and moves an object, Device 2 will also see that same movement.
+
+World Locking Tools automatically creates and distributes spatial anchors to create a spatial map of the local environment for each device. Each device can use the voice command "reinitialize" to restart the program and generate new spatial anchors so that the spatial maps on each device are the same or similar enough for models to be generated in the same physical location. 
+
+### In Depth
 On the host PC, when a new client connects, the host will first send any tracked objects stored before sending over the mesh data. All data packages sent from the host are received by Network Controller. When the mesh data is sent to the first connected client, the receiver thread in Network Controller will copy and store the bytes from the message that categorize/identify it. In processing the mesh data packet, it will check if there are any objects in the ObjectList and any Tracked Objects if they have the same stream id. If so, it will process the mesh and attach it to the corresponding object with the matching stream id. If it cannot find any object with the same stream id, it will instantiate the meshprototype (a game object with the MeshLoader component that is inactive), add a tracked object component, and then process and attach the mesh to the instantiated meshprototype. Once it has been created, it is then added to the ObjectList. If there is already an object in the ObjectList, the object will be added and the mesh renderer (if there is one) will be turned off for the most recently added object. 
 
 When the second client connects and the tracked object data is sent over, in processing the tracked object data, there will be a check for object with the same GUID or stream id. Since there are no objects created on this client yet, persistence handler will be called to instantiate the meshprototype. The tracked object class is added, but the mesh is not loaded yet. The newly created object is added to the ObjectList on this device. The meshes are sent to each device, and the meshes with the matching stream id will be loaded onto the corresponding object for each device. This is to ensure that if for some reason the meshes were sent in a different order, both clients will be seeing the same thing rendered for object 1 (i.e. instead of one device seeing mesh1 on object1 and the other seeing mesh2 on object1). 
@@ -42,13 +50,6 @@ When the second client connects and the tracked object data is sent over, in pro
 The tracked object component basically keeps track of the transform info of the object, compares it to the update it received and will change the values of the transform information until it reaches the target transform values. If it has not received an update, it will check its own position with the last position it has recorded and send an update to the host if there is a significant enough change. This update is received by the host, updated on the tracked obejct store on the host before being sent out to all clients. 
 
 World Locking Tools will automatically create and spread out spatial anchors as the user moves around their local environment, creating a spatial map for that device. However, these may not necessarily line up for both users and there is no current implementation in this system to share spatial anchors for establishing a common local coordinate system. So instead, users will need to force a restart of the program which clears the stored spatial anchor data, and generate a new spatial map on restart until the spatial maps for both devices line up to an acceptable degree. 
-
-### Structure Summary
-When Device 1 connects to the host server, any stl files on the desktop of the host are sent to Device 1. The data packages are received by Network Controller and the stl data is converted into a mesh. The tracked object data is shared with the host server. When Device 2 connects to the server, first the tracked object data is shared. Once the appropriate tracked objects are created, the stl files are sent to all clients again. Both devices will convert and load each mesh again, to ensure that both devices are viewing the same object. 
-
-The tracked object component will send updates of the object's position, rotation, and scale to the host, and from the host these updates are sent to all clients so these interactions are synchronized across all devices. Linear interpolation is used to smooth out the trasition between these updates. For example, if Device 1 grabs and moves an object, Device 2 will also see that same movement.
-
-World Locking Tools automatically creates and distributes spatial anchors to create a spatial map of the local environment for each device. Each device can use the voice command "reinitialize" to restart the program and generate new spatial anchors so that the spatial maps on each device are the same or similar enough for models to be generated in the same physical location. 
 
 ## Build & Deployment
 In Unity:
