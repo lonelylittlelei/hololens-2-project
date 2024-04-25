@@ -48,7 +48,7 @@ In Unity:
 1) File > Build Settings
 2) Ensure the target platform is set to Universal Windows Platform (UWP). The target platform will have the Unity symbol next to it. If not, select UWP and click Switch Platform at the bottom of the window and let it run.
 3) Ensure there are no issues with the Project Validation. Go to Edit > Project Settings > XR Plug-in Management > Project Validation and under the UWP settings tab, see if there are any issues of checks. If there are multiple, there should be an option to Fix All.
-5) Back in Build Settings, set the following UWPsettings and then click Build:
+4) Back in Build Settings, set the following UWPsettings and then click Build:
    - Target Device: HoloLens
    - Architecture: ARM64
    - Build Type: D3D Project
@@ -58,18 +58,20 @@ In Unity:
    - Build and Run on: Local Machine
    - Build Configuration: Release
    - Compression Method: Default
-7) Select a Folder to create the build in
-8) Open the .sln solution file in Visual Studio
+5) Select a Folder to create the build in
+6) Open the .sln solution file in Visual Studio
 
 Once in Visual Studio:
-9) Plug HoloLens 2 device into PC via USB
-10) In the top menu, select Debug or Release (recommended)
-11) Select ARM64
-12) Select Device
-![image](https://github.com/lonelylittlelei/hololens-2-project/assets/155585007/b0930903-d339-45ea-9766-a59918f2e837)
-13) Debug tab > Start Without Debugging (with device signed into main menu) or Click Device again.
 
-14) Wait for it to Compile, Build, and Deploy
+7) Plug HoloLens 2 device into PC via USB
+8) In the top menu, select Debug or Release (recommended)
+9) Select ARM64
+10) Select Device
+
+![image](https://github.com/lonelylittlelei/hololens-2-project/assets/155585007/b0930903-d339-45ea-9766-a59918f2e837)
+
+11) Debug tab > Start Without Debugging (with device signed into main menu) or Click Device again.
+12) Wait for it to Compile, Build, and Deploy
   - This will deploy the build locally onto the HL2, so it can now be unplugged
 **Note:** For debug logs, select Debug and Debug>Start With Debugging. A long USB cable is recommended, as the device must remain plugged in to show the logs.
 
